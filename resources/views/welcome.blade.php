@@ -62,38 +62,25 @@
                 margin-bottom: 30px;
             }
         </style>
+    <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Formulario del Texter</div>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                    <div class="panel-body">
+                        <form>
+                            <textarea class="ckeditor"  name="editor1" id="editor1" rows="10" cols="80">
+                                Este es el textarea que es modificado por la clase ckeditor
+                            </textarea>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
     </body>
 </html>
