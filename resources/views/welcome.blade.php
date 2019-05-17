@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Texter</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -62,25 +62,144 @@
                 margin-bottom: 30px;
             }
         </style>
-    <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
+        <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" />                
+        <script type="text/javascript" src="{{ asset('js/app.js') }}" ></script>
+        <script>            
+
+            $(document).ready(function() {
+                function readTextFile(file, callback, encoding) {
+                    var reader = new FileReader();
+                    reader.addEventListener('load', function (e) {
+                        callback(this.result);
+                    });
+                    if (encoding) reader.readAsText(file, encoding);
+                    else reader.readAsText(file);
+                }
+
+                function fileChosen(input) {
+                    if ( input.files && input.files[0] ) {
+                        readTextFile(
+                            input.files[0],
+                            function (str) {                                
+                                //output.updateElement();
+                                addNewTab(str);
+                            }
+                        );
+                    }
+                }
+
+                $('#files').on('change', function () {
+                var result = $("#files").text();                                                                   
+                    fileChosen(this); 
+                    var $el = $('#files');
+                    $el.wrap('<form>').closest('form').get(0).reset();
+                    $el.unwrap();                                       
+                    $('#mdlNuevo').modal('hide');
+                }); 
+    
+                function addNewTab(str){
+                    var id = $(".nav-tabs").children().length + 1; //think about it ;)
+                    var codId = 'new_' + id;
+                    var tabId = codId + '-tab';        
+                    var newli = '<li class="nav-item"><a id=' + tabId + ' class="nav-link" href="#' + codId + '" data-toggle="tab" role="tab" aria-controls="' + codId +'" aria-selected="false">New ' + id + '</a></li>';
+                    var newckeditor = '<textarea class="ckeditor"  name="editor' + id +'" id="editor' + id +'" rows="10" cols="80"></textarea>'
+                    var newdiv = '<div class="tab-pane fade" id="' + codId + '" role="tabpanel" aria-labelledby="' + tabId +'" > ' + newckeditor + '</div>'
+                    $(".nav-tabs li").last().closest('li').after(newli);
+                    $('.tab-content').append(newdiv);
+                    $('.nav-tabs li:nth-child(' + id + ') a').click();
+                    CKEDITOR.replace("editor" + id).setData(str);;                                        
+                }           
+
+                $('.add-nuevo').click(function (e) {
+                    e.preventDefault();
+                    addNewTab("");    
+                });
+
+            });  
+        </script>
     </head>
     <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Formulario del Texter</div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#mdlNuevo">Abrir<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="newPage" class="nav-link add-nuevo" href="#" >Nuevo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#mdlGuardar">Guardar</a>
+                    </li>            
+                </ul>
+            </div>
+        </nav>
 
-                    <div class="panel-body">
-                        <form>
-                            <textarea class="ckeditor"  name="editor1" id="editor1" rows="10" cols="80">
-                                Este es el textarea que es modificado por la clase ckeditor
-                            </textarea>
-                        </form>
-                    </div>
-                </div>
+        <form>
+            <div class="container">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="new_1-tab" data-toggle="tab" href="#new_1" role="tab" aria-controls="new_1" aria-selected="true">New 1</a>
+                    </li>        
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="new_1" role="tabpanel" aria-labelledby="new_1-tab">                            
+                        <textarea class="ckeditor"  name="editor1" id="editor1" rows="10" cols="80"></textarea>                                           
+                </div>        
+            </div>
+        </form>
+        
+    </div>
+    
+    <!-- Modal Abrir Archivo -->
+    <div class="modal fade" id="mdlNuevo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Abrir Archivo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <div class="custom-file">
+                <input name="file" type="file" class="custom-file-input" id="files" value="">
+                <label class="custom-file-label" for="files">Escoger Archivo</label>
+            </div>
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>               
+            </div>
             </div>
         </div>
     </div>
+
+
+    <!-- Modal Guardar Cambios-->
+    <div class="modal fade" id="mdlGuardar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Guardar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Desea guardar los cambios realizados?.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     </body>
 </html>
