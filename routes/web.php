@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('index');
+})->name('index');
+Route::post('store','NotesController@store')->name('note.store');
+Route::get('list','NotesController@index')->name('note.index');
+Route::get('edit/{note}','NotesController@edit')->name('note.edit');
+route::put('update/{note}','NotesController@update')->name('note.update');
