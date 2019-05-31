@@ -2,7 +2,8 @@
 
 @section('content')
 
-<form action="{{ route() }}">
+<form action="{{ route('note.store') }}" method="POST">
+    {{ csrf_field() }}
     <div class="form-group">
         <label for="">Write title</label>
             <input type="text" class="form-control" name="title">

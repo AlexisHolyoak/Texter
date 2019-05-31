@@ -2,7 +2,9 @@
 
 @section('content')
 
-<form action="{{ route('note.update',$note) }}">
+<form action="{{ route('note.update',$note) }}" method="POST">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="form-group">
         <label for="">Write title</label>
             <input type="text" class="form-control" value="{{ $note->title }}" name="title">
