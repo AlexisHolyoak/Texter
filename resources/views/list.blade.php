@@ -2,26 +2,29 @@
 
 @section('content')
 <table class="table">
-<thead>
-    <tr>
-        <th>
-            title
-        </th>
-        <th>
-            Actions
-        </th>
-    </tr>
-</thead>
-<tbody>
-    @foreach ($note as $notes)
-    <tr>
-{{ $note->title }}
-        </tr>
+    <thead>
         <tr>
-            <a href="{{ route('note.edit',$note) }}">Edit</a>
+            <th>
+                title
+            </th>
+            <th>
+                Actions
+            </th>
         </tr>
-    @endforeach
+    </thead>
+    <tbody>
+        @foreach ($notes as $note)
+        <tr>
+            <td>
+                {{ $note->title }}
+            </td>
 
-</tbody>
+            <td>
+                <a href="{{ route('note.edit',$note) }}">Edit</a>
+            </td>
+        </tr>
+        @endforeach
+
+    </tbody>
 </table>
 @endsection
