@@ -40,7 +40,7 @@ class NotesController extends Controller
         $note->title = $request->title;
         $note->content = $request->content;
         $note-> save();
-        return Redirect::to('note.index');
+        return redirect()->route('note.index');
     }
 
     /**
@@ -77,7 +77,7 @@ class NotesController extends Controller
         $note->title = $request -> title;
         $note->content = $request -> content;
         $note->save();
-        return Redirect::to('note.index');
+        return redirect()->route('note.index');
     }
 
     /**

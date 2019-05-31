@@ -12,7 +12,7 @@
 </head>
 <body>
     <a href="{{ route('index') }}" class="btn" target="_blank" rel="noopener noreferrer">Nuevo</a>
-    <a href="" class="btn">Files</a>
+    <a href="{{ route('note.index') }}" class="btn">Files</a>
     <div class="container">
         @yield('content')
     </div>
