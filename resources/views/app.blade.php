@@ -20,13 +20,20 @@
                     <ul class="navbar-nav">
                       <li class="nav-item active">
                             <a href="{{ route('index') }}" class="nav-link" target="_blank" rel="noopener noreferrer">Nuevo</a>
-                      </li>                       
+                      </li> 
+                       <li class="nav-item">
+                            <a href="" class="nav-link">Guardar</a>
+                      </li> 
                       <li class="nav-item">
-                            <a href="{{ route('note.index') }}" class="nav-link">Abrir</a>
+                            <a href="" class="nav-link">Abrir</a>
+                      </li> 
+                      <li class="nav-item">
+                            <a href="{{ route('note.index') }}" class="nav-link">Archivos</a>
                       </li>                     
                        <li class="nav-item">
                             <a href="javascript:window.close();opener.window.focus();" class="nav-link">Cerrar</a>
                       </li> 
+                     
                     </ul>
                   </div>
     </nav>
