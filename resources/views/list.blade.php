@@ -5,10 +5,10 @@
     <thead>
         <tr>
             <th>
-                title
+                Titulo
             </th>
             <th>
-                Actions
+                Acciones
             </th>
         </tr>
     </thead>
