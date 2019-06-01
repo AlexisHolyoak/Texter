@@ -23,10 +23,7 @@
                       </li>
                       <li class="nav-item">
                             <a href="{{ route('note.index') }}" class="btn">Files</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">Abrir</a>
-                      </li>
+                      </li>                    
                     </ul>
                   </div>
     </nav>
