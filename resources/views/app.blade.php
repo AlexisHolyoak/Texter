@@ -23,12 +23,9 @@
                       </li> 
                        <li class="nav-item">
                             <a href="" class="nav-link">Guardar</a>
-                      </li> 
+                      </li>                   
                       <li class="nav-item">
-                            <a href="" class="nav-link">Abrir</a>
-                      </li> 
-                      <li class="nav-item">
-                            <a href="{{ route('note.index') }}" class="nav-link">Archivos</a>
+                            <a href="{{ route('note.index') }}" class="nav-link">Abrir</a>
                       </li>                     
                        <li class="nav-item">
                             <a href="javascript:window.close();opener.window.focus();" class="nav-link">Cerrar</a>
