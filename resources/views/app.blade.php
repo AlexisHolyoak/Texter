@@ -11,8 +11,27 @@
         <script type="text/javascript" src="{{ asset('js/app.js') }}" ></script>
 </head>
 <body>
-    <a href="{{ route('index') }}" class="btn" target="_blank" rel="noopener noreferrer">Nuevo</a>
-    <a href="{{ route('note.index') }}" class="btn">Files</a>
+    <nav class="navbar navbar-dark bg-dark">
+        <a href="#" class="navbar-brand">Texter</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                      <li class="nav-item active">
+                            <a href="{{ route('index') }}" class="btn" target="_blank" rel="noopener noreferrer">Nuevo</a>
+                      </li>
+                      <li class="nav-item">
+                            <a href="{{ route('note.index') }}" class="btn">Files</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Abrir</a>
+                      </li>
+                    </ul>
+                  </div>
+    </nav>
+
+
     <div class="container">
         @yield('content')
     </div>
