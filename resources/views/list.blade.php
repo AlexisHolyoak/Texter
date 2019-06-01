@@ -20,7 +20,7 @@
             </td>
 
             <td>
-                <a href="{{ route('note.edit',$note) }}">Edit</a>
+                <a href="{{ route('note.edit',$note) }}">Abrir</a>
             </td>
         </tr>
         @endforeach
