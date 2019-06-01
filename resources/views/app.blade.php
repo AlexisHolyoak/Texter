@@ -19,11 +19,14 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                       <li class="nav-item active">
-                            <a href="{{ route('index') }}" class="btn" target="_blank" rel="noopener noreferrer">Nuevo</a>
-                      </li>
+                            <a href="{{ route('index') }}" class="nav-link" target="_blank" rel="noopener noreferrer">Nuevo</a>
+                      </li>                       
                       <li class="nav-item">
-                            <a href="{{ route('note.index') }}" class="btn">Files</a>
-                      </li>                    
+                            <a href="{{ route('note.index') }}" class="nav-link">Abrir</a>
+                      </li>                     
+                       <li class="nav-item">
+                            <a href="#" class="nav-link">Cerrar</a>
+                      </li> 
                     </ul>
                   </div>
     </nav>
