@@ -5,7 +5,7 @@
 <form action="{{ route('note.store') }}" method="POST">
     {{ csrf_field() }}
     <div class="form-group">
-        <label for="">Write title</label>
+        <label for="">Nombre de documento:</label>
             <input type="text" class="form-control" name="title" required>
             <br>
             <textarea class="ckeditor"  name="content" id="editor1" rows="10" cols="80" required></textarea>
