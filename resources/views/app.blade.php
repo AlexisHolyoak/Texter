@@ -25,7 +25,7 @@
                             <a href="{{ route('note.index') }}" class="nav-link">Abrir</a>
                       </li>                     
                        <li class="nav-item">
-                            <a href="#" class="nav-link">Cerrar</a>
+                            <a href="javascript:window.close();opener.window.focus();" class="nav-link">Cerrar</a>
                       </li> 
                     </ul>
                   </div>
