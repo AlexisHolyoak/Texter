@@ -11,7 +11,7 @@
             <br>
             <textarea class="ckeditor"  id="editor1" rows="10" cols="80" name="content" required>{{ $note->content }}</textarea>
             <br>
-            <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+            <button type="submit" class="btn btn-primary btn-block">Actualizar</button>
     </div>
 </form>
 
