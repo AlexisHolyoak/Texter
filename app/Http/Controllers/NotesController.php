@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 class NotesController extends Controller
 {
     /**
@@ -15,7 +16,26 @@ class NotesController extends Controller
     public function index()
     {
         $notes = Note::all();
-        return view('list',compact('notes'));
+        $children=array();
+
+        foreach ($notes as $note) {
+            $tmp = array("text"=> $note->title,                          
+                         "id" => $note->id);
+            array_push($children, $tmp);                  
+        }
+        
+        $response = array(['text' => 'Archivos','id' => 0,'children'=>$children]);
+        return json_encode($response);
+    }
+
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function load()
+    {                
+        return view('index',compact('notes'));
     }
 
     /**
@@ -25,7 +45,7 @@ class NotesController extends Controller
      */
     public function create()
     {
-        //
+        //        
     }
 
     /**
@@ -40,7 +60,7 @@ class NotesController extends Controller
         $note->title = $request->title;
         $note->content = $request->content;
         $note-> save();
-        return redirect()->route('note.index');
+        return "OK";
     }
 
     /**
@@ -51,7 +71,7 @@ class NotesController extends Controller
      */
     public function show(Note $note)
     {
-        //
+        //        
     }
 
     /**
@@ -62,7 +82,8 @@ class NotesController extends Controller
      */
     public function edit(Note $note)
     {
-        return view('edit',compact('note'));
+        $note = DB::table('notes')->where('id', $note->id)->first();
+        return $note->content;
     }
 
     /**
@@ -77,7 +98,7 @@ class NotesController extends Controller
         $note->title = $request -> title;
         $note->content = $request -> content;
         $note->save();
-        return redirect()->route('note.index');
+        return 'OK';
     }
 
     /**
