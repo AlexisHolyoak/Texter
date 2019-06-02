@@ -71,7 +71,7 @@ $(document).ready(function() {
         primaryKey: 'id',
         uiLibrary: 'bootstrap4',
         border: true,
-        dataSource: './list'       
+        dataSource: '/list'       
     }).expandAll();
 
     tree.on('select', function (e, node, id) {
@@ -84,7 +84,7 @@ $(document).ready(function() {
     function getValue(name, id){
         $.ajax({
             type:'GET', 
-            url:'./edit/'+id,             
+            url:'/edit/'+id,             
             success:function(data){ 
                 addNewTab(name, data, id);
             } 
@@ -94,7 +94,7 @@ $(document).ready(function() {
     function guardarArchivo(title, content){
         $.ajax({
             type:'POST', 
-            url:'./store',
+            url:'/store',
             data: {title:title, content:content },
             success:function(data){ 
                 alert("Se guardo satisfactoriamente!");                
@@ -106,7 +106,7 @@ $(document).ready(function() {
     function actualizarArchivo(id, title, content){
         $.ajax({
             type:'PUT', 
-            url:'./update/'+ id,
+            url:'/update/'+ id,
             data: {title:title, content:content },
             success:function(data){ 
                 alert("Se actualizo satisfactoriamente!");
