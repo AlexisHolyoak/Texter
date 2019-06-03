@@ -66,20 +66,37 @@ $(document).ready(function() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });                
+    
+    $.ajax({
+        type:'GET', 
+        url:'/list',             
+        success:function(data){             
+            loadFolder(data);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener los documentos"), "ERROR";
+        }  
+     }); 
+     
+    function loadFolder(data){
+        var tree = $('#tree').tree({
+            primaryKey: 'id',
+            uiLibrary: 'bootstrap4',
+            border: true,
+            dataSource: JSON.parse(data),                        
+            icons: {
+                expand: '<i class="material-icons">folder</i>',
+                collapse: '<i class="material-icons">folder</i>'
+            }
+        }).expandAll();
 
-    var tree = $('#tree').tree({
-        primaryKey: 'id',
-        uiLibrary: 'bootstrap4',
-        border: true,
-        dataSource: '/list'       
-    }).expandAll();
-
-    tree.on('select', function (e, node, id) {
+        tree.on('select', function (e, node, id) {
             if (id != 0){
                 var name = node.find('[data-role="display"]').text();
                 var data = getValue(name, id);                
             }                    
-    });
+        });    
+    }
 
     function getValue(name, id){
         $.ajax({
@@ -87,8 +104,11 @@ $(document).ready(function() {
             url:'/edit/'+id,             
             success:function(data){ 
                 addNewTab(name, data, id);
-            } 
-         });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showAlert("alertContainer", "Editar", "Ocurrio un error al obtener el documento"), "ERROR";
+            }  
+         }); 
     }
 
     function guardarArchivo(title, content){
@@ -96,9 +116,12 @@ $(document).ready(function() {
             type:'POST', 
             url:'/store',
             data: {title:title, content:content },
-            success:function(data){ 
-                alert("Se guardo satisfactoriamente!");                
+            success:function(data){                 
+                showAlert("alertContainer", "Guardar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");               
                 tree.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showAlert("alertContainer", "Guardar", "Ocurrio un error al guardar el documento"), "ERROR";
             } 
          });
     }
@@ -108,9 +131,12 @@ $(document).ready(function() {
             type:'PUT', 
             url:'/update/'+ id,
             data: {title:title, content:content },
-            success:function(data){ 
-                alert("Se actualizo satisfactoriamente!");
-            } 
+            success:function(data){                 
+                showAlert("alertContainer", "Actualizar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showAlert("alertContainer", "Actualizar", "Ocurrio un error al guardar el documento"), "ERROR";
+            }  
          });
     }
 
@@ -127,5 +153,22 @@ $(document).ready(function() {
             guardarArchivo(title, content);            
         }        
     });
+
+    function showAlert(idDiv, titulo, mensaje, resultado){   
+        var tipo;
+        if (resultado == 'EXITO'){
+            tipo = 'alert-success';
+        }else{
+            tipo = 'alert-danger';
+        }
+        var mensaje = '<div class="alert ' + tipo + ' alert-dismissible fade show" role="alert">' +
+                            '<strong>' + titulo + ' </strong> ' + mensaje + '.' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                '<span aria-hidden="true">&times;</span>' +
+                            '</button>' +
+                       '</div>';
+        $('#'+idDiv).append(mensaje);        
+        setTimeout(function(){ $('#'+idDiv).empty();}, 3000);        
+    }
 
 });  

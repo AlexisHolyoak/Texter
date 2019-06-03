@@ -19,11 +19,13 @@ class NotesController extends Controller
         $children=array();
 
         foreach ($notes as $note) {
-            $tmp = array("text"=> $note->title,
-                         "id" => $note->id);
-            array_push($children, $tmp);
+            $tmp = array("text"=> $note->title,                          
+                         "id" => $note->id,
+                         "imageHtml" =>'<i class="material-icons">insert_drive_file</i>'
+                        );
+            array_push($children, $tmp);                  
         }
-
+        
         $response = array(['text' => 'Archivos','id' => 0,'children'=>$children]);
         return json_encode($response);
     }
@@ -34,8 +36,8 @@ class NotesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function load()
-    {
-        return view('index');
+    {                
+        return view('index',compact('notes'));
     }
 
     /**
@@ -45,7 +47,7 @@ class NotesController extends Controller
      */
     public function create()
     {
-        //
+        //        
     }
 
     /**
@@ -71,7 +73,7 @@ class NotesController extends Controller
      */
     public function show(Note $note)
     {
-        //
+        //        
     }
 
     /**
