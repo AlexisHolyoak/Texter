@@ -69,7 +69,7 @@ $(document).ready(function() {
     
     $.ajax({
         type:'GET', 
-        url:'/list',             
+        url:'./list',             
         success:function(data){             
             loadFolder(data);
         },
@@ -77,9 +77,10 @@ $(document).ready(function() {
             showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener los documentos"), "ERROR";
         }  
      }); 
-     
+    
+    var tree;
     function loadFolder(data){
-        var tree = $('#tree').tree({
+        tree = $('#tree').tree({
             primaryKey: 'id',
             uiLibrary: 'bootstrap4',
             border: true,
@@ -101,7 +102,7 @@ $(document).ready(function() {
     function getValue(name, id){
         $.ajax({
             type:'GET', 
-            url:'/edit/'+id,             
+            url:'./edit/'+id,             
             success:function(data){ 
                 addNewTab(name, data, id);
             },
@@ -111,14 +112,28 @@ $(document).ready(function() {
          }); 
     }
 
+    function treeReload(){
+        $.ajax({
+            type:'GET', 
+            url:'./list',             
+            success:function(data){             
+                tree.render(data);
+                tree.expandAll();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener los documentos"), "ERROR";
+            }  
+         });    
+    }
+
     function guardarArchivo(title, content){
         $.ajax({
             type:'POST', 
-            url:'/store',
+            url:'./store',
             data: {title:title, content:content },
             success:function(data){                 
-                showAlert("alertContainer", "Guardar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");               
-                tree.reload();
+                treeReload();
+                showAlert("alertContainer", "Guardar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                               
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 showAlert("alertContainer", "Guardar", "Ocurrio un error al guardar el documento"), "ERROR";
@@ -129,10 +144,11 @@ $(document).ready(function() {
     function actualizarArchivo(id, title, content){
         $.ajax({
             type:'PUT', 
-            url:'/update/'+ id,
+            url:'./update/'+ id,
             data: {title:title, content:content },
             success:function(data){                 
-                showAlert("alertContainer", "Actualizar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");
+                treeReload();
+                showAlert("alertContainer", "Actualizar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 showAlert("alertContainer", "Actualizar", "Ocurrio un error al guardar el documento"), "ERROR";
