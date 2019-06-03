@@ -37,7 +37,7 @@ class NotesController extends Controller
      */
     public function load()
     {                
-        return view('index',compact('notes'));
+        return view('index');
     }
 
     /**
