@@ -42,8 +42,8 @@ $(document).ready(function() {
         var tabId = codId + '-tab';        
         var newli = '<li class="nav-item"><a editor-id=' +id +' data-id=' + idNote + ' id=' + tabId + ' class="nav-link" href="#' + codId + '" data-toggle="tab" role="tab" aria-controls="' + codId +'" aria-selected="false">' + nameFile + '</a><span> x </span></li>';
         var newckeditor = '<textarea class="ckeditor"  name="editor' + id +'" id="editor' + id +'" rows="10" cols="80"></textarea>'
-        var newdiv = '<div class="tab-pane fade" id="' + codId + '" role="tabpanel" aria-labelledby="' + tabId +'" > ' + newckeditor + '</div>'
-        $(".nav-tabs li").last().closest('li').after(newli);
+        var newdiv = '<div class="tab-pane fade" id="' + codId + '" role="tabpanel" aria-labelledby="' + tabId +'" > ' + newckeditor + '</div>'        
+        $(".nav-tabs").append(newli);
         $('.tab-content').append(newdiv);
         $('.nav-tabs li:nth-child(' + idCurrent + ') a').click();
         CKEDITOR.replace("editor" + id).setData(str);;                                        
@@ -51,15 +51,44 @@ $(document).ready(function() {
 
     $('.add-nuevo').click(function (e) {                    
         e.preventDefault();
-        addNewTab("","",0);    
+        var nameFile = $("#txtnameFile").val();
+        if (nameFile == ""){
+            alert("Es necesario ingresar el nombre.");
+        }else{
+            $("#mdlInputName").modal('hide');        
+            addNewTab(nameFile,"",0);
+        }                
+
     });
 
-    $(".nav-tabs").on("click", "span", function () {                    
-        var anchor = $(this).siblings('a');
-        $(anchor.attr('href')).remove();
-        $(this).parent().remove();
-        $(".nav-tabs li").children('a').first().click();
+    $('#mdlInputName').on('hidden.bs.modal', function (e) {
+        $(this)
+          .find("input,textarea,select")
+             .val('')
+             .end()
+          .find("input[type=checkbox], input[type=radio]")
+             .prop("checked", "")
+             .end();
+      })
+
+    $(".nav-tabs").on("click", "span", function () {                            
+        closeTab($(this));
     });
+
+
+    function closeTab(navTab){
+        var anchor = navTab.siblings('a');
+        $(anchor.attr('href')).remove();
+        navTab.parent().remove();
+        $(".nav-tabs li").children('a').first().click();
+    }
+
+    function closeTabFromId(id){
+        var tab = $(".nav-tabs").children().find("a[data-id='"+id+"']").next();                
+        if ( tab.length > 0){
+            closeTab(tab);
+        }
+    }
 
     $.ajaxSetup({
         headers: {
@@ -88,7 +117,7 @@ $(document).ready(function() {
             icons: {
                 expand: '<i class="material-icons">folder</i>',
                 collapse: '<i class="material-icons">folder</i>'
-            }
+            }            
         }).expandAll();
 
         tree.on('select', function (e, node, id) {
@@ -96,20 +125,67 @@ $(document).ready(function() {
                 var name = node.find('[data-role="display"]').text();
                 var data = getValue(name, id);                
             }                    
-        });    
+        });                     
+        
+        loadMenu();
+    }
+
+    function loadMenu(){
+        $("li[data-role='node']").on('contextmenu', function(e) {
+            var dataid = $(this).attr("data-id");  
+
+            if (dataid > 0){
+                var top = e.pageY - 50;
+                var left = e.pageX - 90;
+                var nombre = $(this).find('[data-role="display"]').text();
+                var id = $(this).attr( "data-id" );
+
+                $("#context-menu #nameFile").val(nombre);
+                $("#context-menu #idFile").val(id);
+
+                $("#context-menu").css({
+                display: "block",
+                top: top,
+                left: left
+                }).addClass("show");            
+                return false; //blocks default Webbrowser right click menu
+            }                                  
+            
+          }).on("click", function() {
+            $("#context-menu").removeClass("show").hide();
+          });
+          
+          $("#context-menu a").on("click", function() {
+            $(this).parent().removeClass("show").hide();
+          });
+
+          $('body').on('click', function (e) {
+            if (!$('#context-menu').is(e.target) 
+                && $('#context-menu').has(e.target).length === 0 
+                && $('.show').has(e.target).length === 0
+            ) {
+                $("#context-menu").removeClass("show").hide();
+            }
+          });
     }
 
     function getValue(name, id){
-        $.ajax({
-            type:'GET', 
-            url:'./edit/'+id,             
-            success:function(data){ 
-                addNewTab(name, data, id);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                showAlert("alertContainer", "Editar", "Ocurrio un error al obtener el documento"), "ERROR";
-            }  
-         }); 
+        //Verificamos que no este abierto el archivo
+        var tab = $(".nav-tabs").children().find("a[data-id='"+id+"']");        
+        if ( tab.length > 0){
+            tab.trigger('click');
+        }else{
+            $.ajax({
+                type:'GET', 
+                url:'./edit/'+id,             
+                success:function(data){ 
+                    addNewTab(name, data, id);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showAlert("alertContainer", "Editar", "Ocurrio un error al obtener el documento"), "ERROR";
+                }  
+            }); 
+        }
     }
 
     function treeReload(){
@@ -119,6 +195,7 @@ $(document).ready(function() {
             success:function(data){             
                 tree.render(data);
                 tree.expandAll();
+                loadMenu();                
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener los documentos"), "ERROR";
@@ -126,13 +203,14 @@ $(document).ready(function() {
          });    
     }
 
-    function guardarArchivo(title, content){
+    function guardarArchivo(title, content, activeTab){
         $.ajax({
             type:'POST', 
             url:'./store',
             data: {title:title, content:content },
-            success:function(data){                 
-                treeReload();
+            success:function(data){  
+                activeTab.attr("data-id", data);
+                treeReload();                
                 showAlert("alertContainer", "Guardar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                               
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -146,8 +224,8 @@ $(document).ready(function() {
             type:'PUT', 
             url:'./update/'+ id,
             data: {title:title, content:content },
-            success:function(data){                 
-                treeReload();
+            success:function(data){                                
+                treeReload();                
                 showAlert("alertContainer", "Actualizar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -159,15 +237,17 @@ $(document).ready(function() {
     $('.add-guardar').click(function (e) {                    
         e.preventDefault();
         var activeTab = $("ul#myTab a.active");
-        var title = activeTab.text();
-        var id = activeTab.attr("data-id");  
-        var editorId = 'editor'+activeTab.attr("editor-id");  
-        var content = CKEDITOR.instances[editorId].getData(); 
-        if (id > 0){            
-            actualizarArchivo(id, title, content);
-        }else{
-            guardarArchivo(title, content);            
-        }        
+        if (activeTab.length > 0){
+            var title = activeTab.text();
+            var id = activeTab.attr("data-id");  
+            var editorId = 'editor'+activeTab.attr("editor-id");  
+            var content = CKEDITOR.instances[editorId].getData(); 
+            if (id > 0){            
+                actualizarArchivo(id, title, content);
+            }else{
+                guardarArchivo(title, content, activeTab);            
+            }
+        }                
     });
 
     function showAlert(idDiv, titulo, mensaje, resultado){   
@@ -185,6 +265,32 @@ $(document).ready(function() {
                        '</div>';
         $('#'+idDiv).append(mensaje);        
         setTimeout(function(){ $('#'+idDiv).empty();}, 3000);        
-    }
-
+    }  
+    
+    $('#btnEliminar').click(function (e) {  
+        var id = $("#context-menu #idFile").val();    
+        var title = $("#context-menu #nameFile").val();          
+        $.ajax({
+            type:'PUT',
+            url:'./delete/'+ id,            
+            success:function(data){                 
+                treeReload();                
+                showAlert("alertContainer", "Eliminar", "El archivo " + title + " se elimino correctamente", "EXITO");                
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showAlert("alertContainer", "Eliminarar", "Ocurrio un error al eliminar el documento"), "ERROR";
+            }  
+         });
+         $("#mdlEliminar").modal('hide');
+         closeTabFromId(id); 
+    });
+    
 });  
+
+$(document).ajaxStart(function(){    
+    $("#loading-overlay").show();
+});
+  
+$(document).ajaxComplete(function(){    
+    $("#loading-overlay").hide();
+});

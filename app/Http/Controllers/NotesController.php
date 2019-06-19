@@ -59,10 +59,17 @@ class NotesController extends Controller
     public function store(Request $request)
     {
         $note = new Note();
+        
         $note->title = $request->title;
-        $note->content = $request->content;
+
+        if (is_null($request->content)){
+            $note->content = "";
+        }else{
+            $note->content = $request->content;    
+        }
+        
         $note-> save();
-        return "OK";
+        return $note->id;
     }
 
     /**
@@ -109,8 +116,11 @@ class NotesController extends Controller
      * @param  \App\Note  $note
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Note $note)
+    public function destroy($id)
     {
-        //
+        $note = Note::find($id);
+        $note->delete();
+        
+        return 'OK';
     }
 }

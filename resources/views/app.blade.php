@@ -18,7 +18,10 @@
     <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
 </head>
-<body>    
+<body>   
+    <div id="loading-overlay">
+        <div class="loading-icon"></div>
+    </div>  
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">        
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -29,7 +32,7 @@
                         <a class="nav-link" href="" data-toggle="modal" data-target="#mdlNuevo">Abrir</a>
                     </li>
                     <li class="nav-item">
-                        <a id="newPage" class="nav-link add-nuevo" href="" >Nuevo</a>
+                        <a id="newPage" class="nav-link" href="" data-toggle="modal" data-target="#mdlInputName">Nuevo</a>
                     </li>
                     <li class="nav-item">
                         <a href="" class="nav-link add-guardar">Guardar</a>
@@ -61,6 +64,28 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>               
             </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mdlInputName" tabindex="-1" role="dialog" aria-labelledby="mdlInputNameLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mdlInputNameLabel">Archivo Nuevo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">            
+                    <div class="form-group">                        
+                        <input type="text" class="form-control" id="txtnameFile" placeholder="Titulo" maxlength="20">                          
+                    </div>                                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary add-nuevo">Aceptar</button>
+                </div>
             </div>
         </div>
     </div>
