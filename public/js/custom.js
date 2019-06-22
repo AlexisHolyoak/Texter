@@ -1,6 +1,7 @@
 
 
 $(document).ready(function() {
+    var lengthMaxfile = 5000000;
 
     function readTextFile(file, callback, encoding) {
         var reader = new FileReader();                    
@@ -16,7 +17,11 @@ $(document).ready(function() {
             readTextFile(
                 input.files[0],
                 function (nameFile, str) {                                
-                    addNewTab(nameFile, str,0);
+                    if (str.length > lengthMaxfile){
+                        alert("El archivo a cargar no puedo pesar mas de 5 megaBytes!");
+                    }else{
+                        addNewTab(nameFile, str,0);
+                    }   
                 }
             );
         }
@@ -204,19 +209,23 @@ $(document).ready(function() {
     }
 
     function guardarArchivo(title, content, activeTab){
-        $.ajax({
-            type:'POST', 
-            url:'./store',
-            data: {title:title, content:content },
-            success:function(data){  
-                activeTab.attr("data-id", data);
-                treeReload();                
-                showAlert("alertContainer", "Guardar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                               
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                showAlert("alertContainer", "Guardar", "Ocurrio un error al guardar el documento"), "ERROR";
-            } 
-         });
+        if (content.length > lengthMaxfile){
+            alert("El archivo no puedo pesar mas de 5 megaBytes!");
+        }else{
+            $.ajax({
+                type:'POST', 
+                url:'./store',
+                data: {title:title, content:content },
+                success:function(data){  
+                    activeTab.attr("data-id", data);
+                    treeReload();                
+                    showAlert("alertContainer", "Guardar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                               
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showAlert("alertContainer", "Guardar", "Ocurrio un error al guardar el documento"), "ERROR";
+                } 
+            });
+        }
     }
 
     function actualizarArchivo(id, title, content){
