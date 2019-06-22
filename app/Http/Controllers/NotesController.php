@@ -123,20 +123,20 @@ class NotesController extends Controller
         
         return 'OK';
     }
-    public function exportToRTF(){
+    public function exportToRTF(Note $note){
 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
-        $html = '<h1>Adding element via HTML</h1>';;
+        $html = $note->content;
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
 
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');      
         try {
-            $objWriter->save(public_path('test'.'.docx'));
+            $objWriter->save(public_path($note->title.'.docx'));
         } catch (Exception $th) {
             //throw $th;
         }
         
-        return response()->download(public_path('test'.'.docx'));
+        return response()->download(public_path($note->title.'.docx'));
     }
 }
