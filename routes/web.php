@@ -17,3 +17,4 @@ Route::get('list','NotesController@index');
 Route::get('edit/{note}','NotesController@edit');
 route::put('update/{note}','NotesController@update');
 route::put('delete/{id}','NotesController@destroy');
+route::get('export/{note}', 'NotesController@exportToRTF');

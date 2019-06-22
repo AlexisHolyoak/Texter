@@ -123,4 +123,21 @@ class NotesController extends Controller
         
         return 'OK';
     }
+    public function exportToRTF(){
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $html = '<h1>Adding element via HTML</h1>';;
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment;filename="'.'test'.'.docx'.'"');
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');      
+        try {
+            $objWriter->save(public_path('test'.'.docx'));
+        } catch (Exception $th) {
+            //throw $th;
+        }
+        
+        return response()->download(public_path('test'.'.docx'));
+    }
 }
