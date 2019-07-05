@@ -1,5 +1,4 @@
 
-
 $(document).ready(function() {
     var lengthMaxfile = 5000000;
 
@@ -18,7 +17,7 @@ $(document).ready(function() {
                 input.files[0],
                 function (nameFile, str) {                                
                     if (str.length > lengthMaxfile){
-                        alert("El archivo a cargar no puedo pesar mas de 5 megaBytes!");
+                        alert("La nota a cargar no puedo pesar mas de 5 megaBytes!");
                     }else{
                         addNewTab(nameFile, str,0);
                     }   
@@ -45,26 +44,34 @@ $(document).ready(function() {
         }
         var codId = 'new_' + id;
         var tabId = codId + '-tab';        
-        var newli = '<li class="nav-item"><a editor-id=' +id +' data-id=' + idNote + ' id=' + tabId + ' class="nav-link" href="#' + codId + '" data-toggle="tab" role="tab" aria-controls="' + codId +'" aria-selected="false">' + nameFile + '</a><span> x </span></li>';
+        var newli = '<li class="nav-item"><a editor-modified="false" editor-id=' +id +' data-id=' + idNote + ' id=' + tabId + ' class="nav-link" href="#' + codId + '" data-toggle="tab" role="tab" aria-controls="' + codId +'" aria-selected="false">' + nameFile + '</a><span> x </span></li>';
         var newckeditor = '<textarea class="ckeditor"  name="editor' + id +'" id="editor' + id +'" rows="10" cols="80"></textarea>'
         var newdiv = '<div class="tab-pane fade" id="' + codId + '" role="tabpanel" aria-labelledby="' + tabId +'" > ' + newckeditor + '</div>'        
         $(".nav-tabs").append(newli);
         $('.tab-content').append(newdiv);
         $('.nav-tabs li:nth-child(' + idCurrent + ') a').click();
-        CKEDITOR.replace("editor" + id).setData(str);;                                        
+        CKEDITOR.replace("editor" + id).setData(str);
+        CKEDITOR.instances["editor" + id].on( 'key', function() {
+            var activeTab = $("ul#myTab a.active");
+            if (activeTab.length > 0){                
+                activeTab.attr("editor-modified","true");  
+            }
+        });                                    
     }           
 
     $('.add-nuevo').click(function (e) {                    
         e.preventDefault();
+        const pattern = new RegExp('^[a-zA-Z0-9]+$', 'i');
         var nameFile = $("#txtnameFile").val();
         if (nameFile == ""){
-            alert("Es necesario ingresar el nombre.");
+            alert("Es necesario ingresar el nombre.");            
+        }else if(!pattern.test(nameFile)){
+            alert("El nombre de la nota no es válido, este solo debe contener letras y números");
         }else{
             $("#mdlInputName").modal('hide');        
             addNewTab(nameFile,"",0);
         }                
-
-    });
+    }); 
 
     $('#mdlInputName').on('hidden.bs.modal', function (e) {
         $(this)
@@ -76,10 +83,23 @@ $(document).ready(function() {
              .end();
       })
 
-    $(".nav-tabs").on("click", "span", function () {                            
-        closeTab($(this));
+    var detectedNote = null;
+    $(".nav-tabs").on("click", "span", function () {
+        detectedNote = $(this);
+        var tab = $(this).siblings('a');
+        if (tab.attr("editor-modified") == "true" ){            
+            $("#mdlConfirmarCambios").modal('show');  
+        }else{
+            closeTab($(this));
+        }        
     });
 
+    $("#btnCloseTab").click(function (e) {
+        if (detectedNote != null){
+            closeTab(detectedNote);
+            $("#mdlConfirmarCambios").modal('hide'); 
+        }
+    });
 
     function closeTab(navTab){
         var anchor = navTab.siblings('a');
@@ -108,7 +128,7 @@ $(document).ready(function() {
             loadFolder(data);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener los documentos"), "ERROR";
+            showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener las notas"), "ERROR";
         }  
      }); 
     
@@ -187,7 +207,7 @@ $(document).ready(function() {
                     addNewTab(name, data, id);
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    showAlert("alertContainer", "Editar", "Ocurrio un error al obtener el documento"), "ERROR";
+                    showAlert("alertContainer", "Editar", "Ocurrio un error al obtener la nota"), "ERROR";
                 }  
             }); 
         }
@@ -203,14 +223,14 @@ $(document).ready(function() {
                 loadMenu();                
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener los documentos"), "ERROR";
+                showAlert("alertContainer", "Obtener", "Ocurrio un error al obtener las notas"), "ERROR";
             }  
          });    
     }
 
     function guardarArchivo(title, content, activeTab){
         if (content.length > lengthMaxfile){
-            alert("El archivo no puedo pesar mas de 5 megaBytes!");
+            alert("La nota no puedo pesar mas de 5 megaBytes!");
         }else{
             $.ajax({
                 type:'POST', 
@@ -218,27 +238,29 @@ $(document).ready(function() {
                 data: {title:title, content:content },
                 success:function(data){  
                     activeTab.attr("data-id", data);
+                    activeTab.attr("editor-modified","false");
                     treeReload();                
-                    showAlert("alertContainer", "Guardar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                               
+                    showAlert("alertContainer", "Guardar", "La nota " + title + " se guardo satisfactoriamente", "EXITO");                               
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    showAlert("alertContainer", "Guardar", "Ocurrio un error al guardar el documento"), "ERROR";
+                    showAlert("alertContainer", "Guardar", "Ocurrio un error al guardar la nota"), "ERROR";
                 } 
             });
         }
     }
 
-    function actualizarArchivo(id, title, content){
+    function actualizarArchivo(id, title, content, activeTab){
         $.ajax({
             type:'PUT', 
             url:'./update/'+ id,
             data: {title:title, content:content },
-            success:function(data){                                
+            success:function(data){  
+                activeTab.attr("editor-modified","false");                              
                 treeReload();                
-                showAlert("alertContainer", "Actualizar", "El archivo " + title + " se guardo satisfactoriamente", "EXITO");                
+                showAlert("alertContainer", "Actualizar", "La Nota " + title + " se guardo satisfactoriamente", "EXITO");                
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                showAlert("alertContainer", "Actualizar", "Ocurrio un error al guardar el documento"), "ERROR";
+                showAlert("alertContainer", "Actualizar", "Ocurrio un error al guardar la nota"), "ERROR";
             }  
          });
     }
@@ -250,9 +272,9 @@ $(document).ready(function() {
             var title = activeTab.text();
             var id = activeTab.attr("data-id");  
             var editorId = 'editor'+activeTab.attr("editor-id");  
-            var content = CKEDITOR.instances[editorId].getData(); 
+            var content = CKEDITOR.instances[editorId].getData();             
             if (id > 0){            
-                actualizarArchivo(id, title, content);
+                actualizarArchivo(id, title, content, activeTab);
             }else{
                 guardarArchivo(title, content, activeTab);            
             }
@@ -284,14 +306,19 @@ $(document).ready(function() {
             url:'./delete/'+ id,            
             success:function(data){                 
                 treeReload();                
-                showAlert("alertContainer", "Eliminar", "El archivo " + title + " se elimino correctamente", "EXITO");                
+                showAlert("alertContainer", "Eliminar", "La nota " + title + " se elimino correctamente", "EXITO");                
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                showAlert("alertContainer", "Eliminarar", "Ocurrio un error al eliminar el documento"), "ERROR";
+                showAlert("alertContainer", "Eliminarar", "Ocurrio un error al eliminar la nota"), "ERROR";
             }  
          });
          $("#mdlEliminar").modal('hide');
          closeTabFromId(id); 
+    });
+
+    $('#donwloadWord').click(function (e) {          
+        var id = $("#context-menu #idFile").val();        
+        location.href = './export/'+ id;
     });
     
 });  

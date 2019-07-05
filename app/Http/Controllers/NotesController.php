@@ -26,7 +26,7 @@ class NotesController extends Controller
             array_push($children, $tmp);                  
         }
         
-        $response = array(['text' => 'Archivos','id' => 0,'children'=>$children]);
+        $response = array(['text' => 'Notas','id' => 0,'children'=>$children]);
         return json_encode($response);
     }
 
@@ -123,8 +123,11 @@ class NotesController extends Controller
         
         return 'OK';
     }
+
     public function exportToRTF(Note $note){
 
+        $note = DB::table('notes')->where('id', $note->id)->first();
+        
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
         $html = $note->content;
