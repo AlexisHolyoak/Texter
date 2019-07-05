@@ -51,7 +51,7 @@ $(document).ready(function() {
         $('.tab-content').append(newdiv);
         $('.nav-tabs li:nth-child(' + idCurrent + ') a').click();
         CKEDITOR.replace("editor" + id).setData(str);
-        CKEDITOR.instances["editor" + id].on( 'key', function() {
+        CKEDITOR.instances["editor" + id].on( 'change', function() {
             var activeTab = $("ul#myTab a.active");
             if (activeTab.length > 0){                
                 activeTab.attr("editor-modified","true");  
