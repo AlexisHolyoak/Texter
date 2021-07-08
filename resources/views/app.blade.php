@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" type="text/css" />    
-    <script type="text/javascript" src="{{ asset('js/app.js') }}" ></script>  
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{{ asset('js/app.js') }}" ></script>
     <script type="text/javascript" src="{{ asset('js/custom.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
@@ -18,17 +18,17 @@
     <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>   
+<body>
     <div id="loading-overlay">
         <div class="loading-icon"></div>
-    </div>  
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">        
+    </div>
+    <nav class="navbar navbar-expand-lg navbar bg-info">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                <!--            
+                <!--
                     <li class="nav-item">
                         <a class="nav-link" href="" data-toggle="modal" data-target="#mdlNuevo">Abrir</a>
                     </li>
@@ -42,14 +42,14 @@
                         <a href="" class="nav-link add-guardar">
                             <i class="fa fa-fw fa-save"></i>Guardar
                         </a>
-                    </li>    
-                <!--                                        
+                    </li>
+                <!--
                     <li class="nav-item">
                         <a href="javascript:open(location, '_self').close();" class="nav-link">
                             <i class="fa fa-fw fa-window-close"></i>Cerrar
                         </a>
-                    </li> 
-                --> 
+                    </li>
+                -->
                 </ul>
         </div>
     </nav>
@@ -68,10 +68,10 @@
                 <input name="file" type="file" class="custom-file-input" id="files" value="">
                 <label class="custom-file-label" for="files">Escoger Archivo</label>
             </div>
-            
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>               
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
             </div>
         </div>
@@ -86,10 +86,10 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">            
-                    <div class="form-group">                        
-                        <input type="text" class="form-control" id="txtnameFile" placeholder="Titulo" maxlength="20">                          
-                    </div>                                    
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="txtnameFile" placeholder="Titulo" maxlength="20">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -118,18 +118,18 @@
             </div>
         </div>
     </div>
-      
+
     <div class="container">
         <div class="row">
             <div class="col-sm-3">
-                @include('list')                                
+                @include('list')
             </div>
-        
-            <div class="col-sm-9">                        
+
+            <div class="col-sm-9">
                 @yield('content')
             </div>
         </div>
-        
-    </div>    
+
+    </div>
 </body>
 </html>
